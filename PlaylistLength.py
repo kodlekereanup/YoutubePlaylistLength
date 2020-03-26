@@ -1,6 +1,9 @@
 import sys
 import requests as rq
 from bs4 import BeautifulSoup
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
 
 # Get the data from the command line argument URL
 def getData(url):
@@ -82,16 +85,28 @@ def Printer(name, length):
     print("Playlist Name: {}".format(name[0:len(name) - 10]))
     print("Playlist Length: {} Hours, {} Minutes, {} Seconds".format(length[0], length[1], length[2]))
 
+
+@app.route('/')
+def load():
+    return render_template('index.html')
+
+@app.route('/submit', methods=['POST'])
+def get_url():
+    URL = request.form["Link"]
+    if URL[0:32] == 'https://www.youtube.com/playlist':
+        data, name = getData(URL)
+        length = properFormat(getHours(data), getMinutes(data), getSeconds(data))
+        Printer(name, length)
+        return render_template('submit.html', n = name, l = length)
+    else:
+        return("<h1> Not a valid link </h1>")
+
+
 # MAIN
-URL = str(sys.argv[1])
+if __name__ == '__main__':
+    app.run(debug=True)
 
-if URL[0:32] == 'https://www.youtube.com/playlist':
-    data, name = getData(URL)
-    length = properFormat(getHours(data), getMinutes(data), getSeconds(data))
-    Printer(name, length)
-else:
-    print('Not A Valid Link')
-
+#URL = str(sys.argv[1])
 #TODO:
 # Number of videos
 # Visualizer?
