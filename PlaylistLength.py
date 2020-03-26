@@ -11,9 +11,7 @@ def getData(url):
     soup = BeautifulSoup(r.content, 'html5lib')
     spans = soup.find_all('div', {'class' : 'timestamp'})
     time = [span.get_text() for span in spans]
-
     name = soup.find('title').get_text()
-
     return time, name
 
 def properFormat(h, m, s):
@@ -85,7 +83,6 @@ def Printer(name, length):
     print("Playlist Name: {}".format(name[0:len(name) - 10]))
     print("Playlist Length: {} Hours, {} Minutes, {} Seconds".format(length[0], length[1], length[2]))
 
-
 @app.route('/')
 def load():
     return render_template('index.html')
@@ -101,12 +98,5 @@ def get_url():
     else:
         return("<h1> Not a valid link </h1>")
 
-
-# MAIN
 if __name__ == '__main__':
     app.run(debug=True)
-
-#URL = str(sys.argv[1])
-#TODO:
-# Number of videos
-# Visualizer?
